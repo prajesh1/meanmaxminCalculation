@@ -80,40 +80,47 @@ def printIndividualLine(descriptiveStatFile,computeFiftyPercentFileRoot):
 			
 #This function prints the calculates, prints and returns the sum of each column of individual line
 def printIndividualLineSum(descriptiveStatFile,computeFiftyPercentFileRoot):
-	with open(descriptiveStatFile, "w", newline='') as csv_file:
+	with open(descriptiveStatFile, "a", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
 		try:
-			computeFiftyPercentFileRoot=np.delete(computeFiftyPercentFileRoot,0,axis=0) # removing the header string values conatining 7 level families
-			computeFiftyPercentFileRoot = computeFiftyPercentFileRoot.astype(float)
+			
+			
 			sum = np.sum(computeFiftyPercentFileRoot,axis=0)
+			writer.writerow('') #print single blank row
 			writer.writerow(sum) #print the sum for each of column of individual line
 			return sum
 		except TypeError as detail:
 				print('descriptive status error is '+str(detail))
 
 def printPercentOfIndividualLine(descriptiveStatFile,computeFiftyPercentFileRoot,IndividualLinesum):
-	with open(descriptiveStatFile, "w", newline='') as csv_file:
+	with open(descriptiveStatFile, "a", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
 		xx= computeFiftyPercentFileRoot
+		writer.writerow('') #print single blank row
+		writer.writerow('') #print single blank row
 		for line in computeFiftyPercentFileRoot:
 						line = np.divide(line,IndividualLinesum)
-						writer.writerow([line])
+						writer.writerow(line)
 		temp = xx
 		count=0
 		writer.writerow('')
 		writer.writerow('')
-		for line in xx:
+		#print(xx)
+		for line2 in xx:
 						myInt = 100  #multiple each value by 100 to get percent value
-						line = np.divide(line,IndividualLinesum)
-						line = [lineval * myInt for lineval in line]
-						writer.writerow(line)
-						temp[count] = line
+						#print("before")
+						#print(line2)
+						line2 = np.divide(line2,IndividualLinesum)
+						#print(line2)
+						line2 = [lineval * myInt for lineval in line2]
+						writer.writerow(line2)
+						temp[count] = line2
 						count = count +1
 						#else:
 						#	xx= temp
 
 def printMedian(descriptiveStatFile,uniqueDiets,concatenatedFileRoot):
-	with open(descriptiveStatFile, "w", newline='') as csv_file:
+	with open(descriptiveStatFile, "a", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
 		writer.writerow('')
 		writer.writerow('median')
@@ -127,8 +134,8 @@ def printMedian(descriptiveStatFile,uniqueDiets,concatenatedFileRoot):
 			xx = np.insert(xx,0,diet)
 			writer.writerow(xx)	
 
-def printMax(descriptiveStatFile,niqueDiets,concatenatedFileRoot):
-	with open(descriptiveStatFile, "w", newline='') as csv_file:
+def printMax(descriptiveStatFile,uniqueDiets,concatenatedFileRoot):
+	with open(descriptiveStatFile, "a", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
 		writer.writerow('')
 		writer.writerow('maximum')
@@ -143,7 +150,7 @@ def printMax(descriptiveStatFile,niqueDiets,concatenatedFileRoot):
 			writer.writerow(xx)
 
 def printMin(descriptiveStatFile,uniqueDiets,concatenatedFileRoot):
-	with open(descriptiveStatFile, "w", newline='') as csv_file:
+	with open(descriptiveStatFile, "a", newline='') as csv_file:
 		writer = csv.writer(csv_file, delimiter=',')
 		writer.writerow('')
 		writer.writerow('Minimum')
@@ -164,13 +171,15 @@ def descriptiveStat(computeFiftyPercentFile,descriptiveStatFile):
 				computeFiftyPercentFileRoot = np.delete(computeFiftyPercentFileRoot,len(computeFiftyPercentFileRoot)-1,0)	
 				xx = computeFiftyPercentFileRoot
 				printIndividualLine(descriptiveStatFile,computeFiftyPercentFileRoot)#prints individual line
-					
+
+				computeFiftyPercentFileRoot=np.delete(computeFiftyPercentFileRoot,0,axis=0) # removing the header string values conatining 7 level families	
+				computeFiftyPercentFileRoot = computeFiftyPercentFileRoot.astype(float)
 				IndividualLinesum = printIndividualLineSum(descriptiveStatFile,computeFiftyPercentFileRoot) #prints the sum
 				
-				#printPercentOfIndividualLine(descriptiveStatFile,
-				#	computeFiftyPercentFileRoot,IndividualLinesum)
+				printPercentOfIndividualLine(descriptiveStatFile,
+					computeFiftyPercentFileRoot,IndividualLinesum)
 					
-				fileRoot= xx
+				fileRoot= computeFiftyPercentFileRoot
 				diets=retriveDiets(fiftyPercentFile)
 				del diets[-1]
 				del diets[0]
